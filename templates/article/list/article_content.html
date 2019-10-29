@@ -1,31 +1,33 @@
 {% extends "base.html" %}
 {% load article_tags %}
 {% load staticfiles %}
-{% block title %}{{article.title}}{% endblock %}
-{% block content %}
+{% block title %}articles list{% endblock %}
+{% block content %} 
 
 {% with total_likes=article.users_like.count users_like=article.users_like.all %}
 <div class="container">
 <div class="col-md-9">
     <header>
-        <h1>{{ article.title }}</h1>
+        <h1>{{ article.title }}</h1> 
         <p>
+            {{ article.auther.username }}
             <a href="{% url 'article:author_articles' article.author.username %}">{{ article.author.username }}</a>
             <span style="margin-left:20px" class="glyphicon glyphicon-thumbs-up">
-                {{ total_likes }} like{{ total_likes | pluralize }}
+                {{ total_likes }} favorite{{ total_likes | pluralize }}
             </span>
             <span style="margin-left:20px">
                 {{ total_views }} view{{ total_views | pluralize}}
             </span>
-
         </p>
-         <p> <span style="margin-right: 10px"><strong>Tags:</strong></span> {{ article.article_tag.all | join:", "}}</p>
-
+        <p> <span style="margin-right: 10px"><strong>Tags:</strong></span> {{ article.article_tag.all | join:", "}}</p>
     </header>
-
-    <link rel="stylesheet" href="{% static 'editor/css/editormd.preview.css' %}" />
+    
+    <link rel="stylesheet" href="{% static 'editor/css/editormd.preview.css' %}" /> 
     <div id='editormd-view'>
-        {{article.body | markdown}}
+{#        <textarea id="append-test" style="display:none;">#}
+{#{{ article.body }}#}
+{#        </textarea>#}
+{{ article.body | markdown }}
     </div>
     <div>
         <p class="text-center">
@@ -50,8 +52,25 @@
         <h3><span class="glyphicon glyphicon-bullhorn"></span>本文有{{ article.comments.all.count }}条评论</h3>
         {% for comment in article.comments.all %}
         <div>
-            <p><strong>{{ comment.commentator }}</strong>说:</p>
-            <p style="margin-left:40px;">{{ comment.body }}</p>
+            {% if article.author_id == request.user.id %}
+                <p><strong>{{ comment.commentator }}</strong>说:</p>
+                <p style="margin-left:40px;">{{ comment.body }}</p>
+                <p><li><a name="delete" href="javascript:" onclick="del_comment(this,{{ comment.id }})">删除</a></li></p>
+{#                <p>{{ comment.id }}</p>#}
+                <p><hr style="clear: both;background-color:#2d557d;height: 2px;"></p>
+            {% elif comment.user_id == request.user.id %}
+                <p><strong>{{ comment.commentator }}</strong>说:</p>
+                <p style="margin-left:40px;">{{ comment.body }}</p>
+                <p><li><a name="delete" href="javascript:" onclick="del_comment(this,{{ comment.id }})">删除</a></li></p>
+                <p><hr style="clear: both;background-color:#2d557d;height: 2px;"></p>
+            {% else %}
+                <p><strong>{{ comment.commentator }}</strong>说:</p>
+                <p style="margin-left:40px;">{{ comment.body }}</p>
+                <p><hr style="clear: both;background-color:#2d557d;height: 2px;"></p>
+{#                <p><strong>{{ article.author_id }}</strong></p>#}
+{#                <p><strong>{{ request.user.id }}</strong></p>#}
+
+            {% endif %}
         </div>
         {% empty %}
         <p>没有评论</p>
@@ -62,7 +81,8 @@
             <div class="form-group">
                 <label for="inputEmail3" class="col-sm-2 control-label">评论员</label>
                 <div class="col-sm-10">
-                    {{ comment_form.commentator}}
+{#                    {{ comment_form.commentator}}#}
+                    {{ request.user.username }}
                 </div>
             </div>
             <div class="form-group">
@@ -79,12 +99,9 @@
         </form>
     </div>
 
-
-
 </div>
 <div class="col-md-3">
     <p class="text-center"><h3>最受欢迎文章</h3></p>
-
     <ol>
         {% for article_rank in most_viewed %}
         <li>
@@ -121,15 +138,18 @@
 
 <script src='{% static "js/jquery.js" %}'></script>
 <script src='{% static "editor/lib/marked.min.js" %}'></script>
-<script src='{% static "editor/lib/prettify.min.js" %}'></script>
+<script src='{% static "editor/lib/prettify.min.js" %}'></script> 
 <script src='{% static "editor/lib/raphael.min.js" %}'></script>
-<script src='{% static "editor/lib/underscore.min.js" %}'></script>
-<script src='{% static "editor/lib/sequence-diagram.min.js" %}'></script>
+<script src='{% static "editor/lib/underscore.min.js" %}'></script> 
+<script src='{% static "editor/lib/sequence-diagram.min.js" %}'></script> 
 <script src='{% static "editor/lib/flowchart.min.js" %}'></script>
-<script src='{% static "editor/lib/jquery.flowchart.min.js" %}'></script>
+<script src='{% static "editor/lib/jquery.flowchart.min.js" %}'></script> 
 <script src='{% static "editor/editormd.js" %}'></script>
+
+<script type="text/javascript" src="{% static 'js/layer.js'%}"></script>
 <script type="text/javascript" src="{% static 'js/layer.js'%}"></script>
 <script type="text/javascript">
+
 $(function(){
     editormd.markdownToHTML("editormd-view", {
         htmlDecode: "style, script, iframe",
@@ -156,7 +176,39 @@ function like_article(id, action){
             }
         },
     });
-}
+ }
 </script>
+
+{% if user.is_authenticated %}
+    <script>
+        function del_comment(the,comment_id){
+            {#var name = $(the).parents("tr").children("td").eq(1).text();#}
+            layer.open({
+                {#type:1,#}
+                skin: "layui-layer-rim",
+                {#area: ["400px", "200px"],#}
+                title: "确认删除",
+                content: "确认删除该条评论？",
+                btn:['确定', '取消'],
+                yes: function(){
+                    $.ajax({
+                        url: '{% url "article:comment_delete" %}',
+                        type:"POST",
+                        data: {"comment_id":comment_id},
+                        success: function(e){
+                            if(e=="1"){
+                                parent.location.reload();
+                                layer.msg("has been deleted.");
+                            }else{
+                                layer.msg("删除失败");
+                            }
+                        },
+                    })
+                },
+            })
+        }
+    </script>
+{% endif %}
+
 {% endwith %}
 {% endblock %}

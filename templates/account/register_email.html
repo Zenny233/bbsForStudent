@@ -1,0 +1,5 @@
+<p>You're receiving this email because you requested a register for your user account at <a href="http://www.itdiffer.com">itdiffer.com</a></p>
+<p>Please go to the following page and register your account:</p>
+{{ protocol }}://{{ domain }}{% url 'account:account_login' uidb64=uid token=token %}
+<p>Thanks for using our site!</p>
+<p>The itdiffer.com team</p>

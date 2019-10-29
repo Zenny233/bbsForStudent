@@ -31,8 +31,10 @@
 {#                <li><a href="{% url 'account:user_delete' %}">注销账号</a> </li>#}
                 <li><a name="delete" href="javascript:" onclick="del_user()">注销账号</a></li>
                 {% else %}
+                <li><a href="{% url 'account:password_reset' %}">忘记密码</a></li>
                 <li><a href="{% url 'account:user_login' %}">登录</a></li>
                 <li><a href="{% url 'account:user_register' %}">注册</a></li>
+
                 {% endif %}
             </ul>
         </div>

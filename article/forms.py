@@ -12,11 +12,13 @@ class ArticlePostForm(forms.ModelForm):
         model = ArticlePost
         fields = ("title", "body")
 
-
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ("commentator", "body",)
+
+        fields = ("body",)
+
+
 
 class ArticleTagForm(forms.ModelForm):
     class Meta:

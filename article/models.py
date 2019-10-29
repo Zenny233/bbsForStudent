@@ -21,7 +21,6 @@ class ArticleTag(models.Model):
     def __str__(self):
         return self.tag
 
-
 class ArticlePost(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="article")
     title = models.CharField(max_length=200)
@@ -53,9 +52,10 @@ class ArticlePost(models.Model):
 
 class Comment(models.Model):
     article = models.ForeignKey(ArticlePost, on_delete=models.CASCADE, related_name="comments")
-    commentator = models.CharField(max_length=90)
     body = models.TextField()
     created = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User,on_delete=models.CASCADE,related_name="comment_user")
+    commentator = models.CharField(max_length=90)
 
     class Meta:
         ordering = ('-created',)
