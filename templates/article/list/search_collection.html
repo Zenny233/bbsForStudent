@@ -12,7 +12,7 @@
 <div class="row text-center vertical-middle-sm">
     <h1>我的收藏</h1>
 </div>
-<div class="container"> 
+<div class="container">
 <div class="col-md-8">
     {% for article in articles %}
         <div class="list-group">
@@ -25,7 +25,20 @@
             <p class="list-group-item-text">概要:{{article.body|slice:'70'|linebreaks}} </p>
         </div>
     {% endfor %}
-    {% include "paginator.html" %} 
+{#    {% include "paginator.html" %} #}
+<div class="pagination">
+    <span class="step-links">
+        {% if page.has_previous %}
+        <a href="?q={{ q }}&page={{ page.previous_page_number }}">Previous</a>
+        {% endif %}
+        <span class="current">
+            Page {{ page.number }} of {{ page.paginator.num_pages }}
+        </span>
+        {% if page.has_next %}
+        <a href="?q={{ q }}&page={{ page.next_page_number }}">Next</a>
+        {% endif %}
+    </span>
+</div>
 </div>
 
 </div>

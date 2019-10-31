@@ -24,4 +24,8 @@ urlpatterns = [
     path('article-collection/', views.article_collection, name="article_collection"),
 
     path('del-comment/', list_views.comment_delete, name="comment_delete"),
+
+    path('search/', list_views.search, name="search"),
+
+    path('search_collection/', list_views.search_collection, name="search_collection"),
 ]

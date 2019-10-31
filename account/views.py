@@ -9,6 +9,82 @@ from django.urls import reverse
 
 from django.contrib.auth import views as auth_views
 
+
+from django.shortcuts import render
+from  .models import *
+from django.http import HttpResponse
+
+from django.conf import settings
+from django.core.mail import send_mail
+
+
+
+from django.views.generic import View
+
+# Create your views here.
+from random import Random
+# 随机生成字符串
+def random_str(randomlength=8):
+    str = ''
+    chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789'
+    length = len(chars)-1
+    random = Random()
+    for i in range(randomlength):
+        str += chars[random.randint(0, length)]
+    return str   # 将拼接的字符串返回
+
+
+def register(request):
+
+    if request.method == "POST":
+        user_form = RegistrationForm(request.POST)
+        userprofile_form = UserProfileForm(request.POST)
+
+        if user_form.is_valid()*userprofile_form.is_valid():
+            new_user = user_form.save(commit=False)
+            new_user.set_password(user_form.cleaned_data['password'])
+            new_user.save()
+
+            new_profile = userprofile_form.save(commit=False)
+            new_profile.user = new_user
+            code = random_str(16)  # 生成16位的随机字符串
+            new_profile.code = code
+            new_profile.save()
+            username = user_form.cleaned_data['username']
+            email = user_form.cleaned_data['email']
+
+            sendEmail( email,code)
+            return HttpResponse('请登录邮件激活')
+            # return HttpResponseRedirect(reverse("account:user_login"))
+        else:
+            return render(request, "account/register.html", {"form": user_form, "profile": userprofile_form})
+    else:
+        user_form = RegistrationForm()
+        userprofile_form = UserProfileForm()
+        return render(request, "account/register.html", {"form": user_form, "profile":userprofile_form})
+
+
+
+def sendEmail(email,code):
+    email_title = "校园交流论坛账号验证"
+    email_body = "请点击下面链接激活你的账号：http://127.0.0.1:8000/account/active/{0}".format(code)
+
+    send_mail(email_title,email_body,settings.EMAIL_HOST_USER,[email])
+
+
+class ActiveUserView(View):
+    def get(self,request,active_code):
+        users = UserProfile.objects.get(code=active_code)
+        if users:
+            users.is_active = True
+            users.save()
+        else:
+            users.delete()
+            return HttpResponse('Fail！Register Again!')
+        return HttpResponseRedirect(reverse("account:user_login"))
+
+
+
 def user_login(request):
     if request.method == "POST":
         login_form = LoginForm(request.POST)
@@ -27,41 +103,6 @@ def user_login(request):
         login_form = LoginForm()
         return render(request, "account/login.html", {"form": login_form})
 
-# def register(request):
-#     if request.method == "POST":
-#         user_form = RegistrationForm(request.POST)
-#         if user_form.is_valid():
-#             new_user = user_form.save(commit=False)
-#             new_user.set_password(user_form.cleaned_data['password'])
-#             new_user.save()
-#             # return HttpResponse("successfully")
-#             return HttpResponseRedirect(reverse("account:user_login"))
-#         else:
-#             return HttpResponse("sorry, your can not register.")
-#     else:
-#         user_form = RegistrationForm()
-#         return render(request, "account/register.html", {"form": user_form})
-
-
-def register(request):
-    if request.method == "POST":
-        user_form = RegistrationForm(request.POST)
-        userprofile_form = UserProfileForm(request.POST)
-        if user_form.is_valid()*userprofile_form.is_valid():
-            new_user = user_form.save(commit=False)
-            new_user.set_password(user_form.cleaned_data['password'])
-            new_user.save()
-            new_profile = userprofile_form.save(commit=False)
-            new_profile.user = new_user
-            new_profile.save()
-            # return HttpResponse("successfully")
-            return HttpResponseRedirect(reverse("account:user_login"))
-        else:
-            return HttpResponse("sorry, your can not register.")
-    else:
-        user_form = RegistrationForm()
-        userprofile_form = UserProfileForm()
-        return render(request, "account/register.html", {"form": user_form, "profile":userprofile_form})
 
 
 @login_required()

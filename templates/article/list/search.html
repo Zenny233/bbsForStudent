@@ -1,19 +1,20 @@
-{% extends "article/base.html" %}
+{% extends "base.html" %}
 {% load article_tags %}
-{% load staticfiles %}
-{% block title %}articles{% endblock %}
+{% block title %} articles {% endblock %}
 {% block content %}
 
-<form class="text-right" role="search" method="get" id="searchform" action="{% url 'article:search_collection' %}">
+<form class="text-right" role="search" method="get" id="searchform" action="{% url 'article:search' %}">
 	<input type="search" name="q" placeholder="搜索" required>
 	<button type="submit" class="btn btn-primary"><span class="ion-ios-search-strong"></span>点击搜索</button>
 </form>
 
 <div class="row text-center vertical-middle-sm">
-    <h1>我的收藏</h1>
+    <h1>阅读，丰富头脑，善化行为</h1>
 </div>
-<div class="container"> 
-<div class="col-md-8">
+{% if error_msg %}
+    <p>{{ error_msg }}</p>
+{% endif %}
+<div class="container">
     {% for article in articles %}
         <div class="list-group">
             <a href="{{article.get_url_path}}" class="list-group-item active">
@@ -25,9 +26,22 @@
             <p class="list-group-item-text">概要:{{article.body|slice:'70'|linebreaks}} </p>
         </div>
     {% endfor %}
-    {% include "paginator.html" %} 
+
+
+<div class="pagination">
+    <span class="step-links">
+        {% if page.has_previous %}
+        <a href="?q={{ q }}&page={{ page.previous_page_number }}">Previous</a>
+        {% endif %}
+        <span class="current">
+            Page {{ page.number }} of {{ page.paginator.num_pages }}
+        </span>
+        {% if page.has_next %}
+        <a href="?q={{ q }}&page={{ page.next_page_number }}">Next</a>
+        {% endif %}
+    </span>
 </div>
 
-</div>
+
 </div>
 {% endblock %}

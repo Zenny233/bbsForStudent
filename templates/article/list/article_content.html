@@ -50,7 +50,8 @@
     <hr>
     <div>
         <h3><span class="glyphicon glyphicon-bullhorn"></span>本文有{{ article.comments.all.count }}条评论</h3>
-        {% for comment in article.comments.all %}
+{#        {% for comment in article.comments.all %}#}
+        {% for comment in comment_page.all %}
         <div>
             {% if article.author_id == request.user.id %}
                 <p><strong>{{ comment.commentator }}</strong>说:</p>
@@ -75,6 +76,8 @@
         {% empty %}
         <p>没有评论</p>
         {% endfor %}
+
+        {% include "paginator.html" %}
 
         <h3><span class="glyphicon glyphicon-send"></span>看文章，发评论，不要沉默</h3>
         <form action="." method="post" class="form-horizontal" role="form">{% csrf_token %}
@@ -209,6 +212,8 @@ function like_article(id, action){
         }
     </script>
 {% endif %}
+
+
 
 {% endwith %}
 {% endblock %}

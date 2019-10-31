@@ -72,7 +72,7 @@ class RegistrationForm(forms.ModelForm):
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ("phone", "StudentID")
+        fields = ("phone", "StudentID","is_active","code")
 
     def clean_phone(self):
         phone = self.cleaned_data.get('phone')
