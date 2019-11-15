@@ -5,10 +5,14 @@ from django import template
 register = template.Library()
 
 from article.models import ArticlePost
-
+# from article.models import Comment
 @register.simple_tag 
 def total_articles():
-    return ArticlePost.objects.count()
+    return ArticlePost.objects.filter(is_check_article='1').count()
+
+# @register.simple_tag
+# def total_comments():
+#     return Comment.objects.filter(is_check_comment='1').count()
 
 @register.simple_tag
 def author_total_articles(user):

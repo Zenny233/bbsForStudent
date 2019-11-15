@@ -93,9 +93,9 @@ def user_login(request):
             user = authenticate(username=cd['username'], password=cd['password'])
             if user:
                 login(request, user)
-                return HttpResponse("Wellcome You.You have been authenticated successfully")
+                return HttpResponse("欢迎您！您已成功登陆")
             else:
-                return HttpResponse("Sorry. Your username or password is not right.")
+                return HttpResponse("您输入的用户名与密码不符")
         else:
             return HttpResponse("Invalid login")
 
@@ -140,17 +140,7 @@ def myself_edit(request):
         userinfo_form = UserInfoForm(initial={"school":userinfo.school, "profession":userinfo.profession, "address":userinfo.address, "aboutme":userinfo.aboutme})
         return render(request, "account/myself_edit.html", {"user_form":user_form, "userprofile_form":userprofile_form, "userinfo_form":userinfo_form})
 
-from .models import UserInfo
-@login_required(login_url='/account/login/')
-def my_image(request):
-    if request.method == 'POST':
-        img = request.POST['img']
-        userinfo = UserInfo.objects.get(user=request.user.id)
-        userinfo.photo = img
-        userinfo.save()
-        return HttpResponse("1")
-    else:
-        return render(request, 'account/imagecrop.html',)
+
 
 from .models import UserInfo
 @login_required(login_url='/account/login/')

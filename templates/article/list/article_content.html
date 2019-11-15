@@ -49,7 +49,7 @@
     </div>
     <hr>
     <div>
-        <h3><span class="glyphicon glyphicon-bullhorn"></span>本文有{{ article.comments.all.count }}条评论</h3>
+        <h3><span class="glyphicon glyphicon-bullhorn"></span>本文有{{total_comments}}条评论</h3>
 {#        {% for comment in article.comments.all %}#}
         {% for comment in comment_page.all %}
         <div>

@@ -8,7 +8,8 @@
             <td>序号</td>
             <td>标题</td> 
             <td>栏目</td>
-            <td>操作</td> 
+            <td>操作</td>
+            <td>状态</td>
         </tr>
         {% for article in articles %} 
         <tr id={{ article.id }}>
@@ -19,6 +20,16 @@
                 <a name="edit" href="{% url 'article:redit_article' article.id %}"><span class="glyphicon glyphicon-pencil"></span></a>
                 <a nane="delete" href="javascript:" onclick="del_article(this, {{ article.id }})"><span class="glyphicon glyphicon-trash" style="margin-left:20px;"></span></a>
             </td>
+             {% if article.is_check_article == '0' %}
+            <td>审核中</td>
+            {% endif %}
+            {% if article.is_check_article == '1' %}
+            <td>审核通过</td>
+            {% endif %}
+            {% if article.is_check_article == '2' %}
+            <td>审核不通过</td>
+            {% endif %}
+
         </tr>
         {% endfor %} 
     </table>

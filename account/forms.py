@@ -26,13 +26,13 @@ class RegistrationForm(forms.ModelForm):
         username = self.cleaned_data.get('username')
 
         if len(username) < 2:
-            raise forms.ValidationError(u"Your username must be at least 2 characters long.")
+            raise forms.ValidationError(u"用户名至少2位")
         elif len(username) > 50:
-            raise forms.ValidationError(u"Your username is too long.")
+            raise forms.ValidationError(u"您的用户名太长")
         else:
             filter_result = User.objects.filter(username__exact=username)
             if len(filter_result) > 0:
-                raise forms.ValidationError(u"Your username already exists.")
+                raise forms.ValidationError(u"用户名已存在")
 
         return username
 
@@ -43,9 +43,9 @@ class RegistrationForm(forms.ModelForm):
         if email_check(email):
             filter_result = User.objects.filter(email__exact=email)
             if len(filter_result) > 0:
-                raise forms.ValidationError(u"Your email already exists.")
+                raise forms.ValidationError(u"邮箱已存在")
         else:
-            raise forms.ValidationError(u"Please enter a valid email.")
+            raise forms.ValidationError(u"请输入有效邮箱")
 
         return email
 
@@ -54,9 +54,9 @@ class RegistrationForm(forms.ModelForm):
     def clean_password(self):
         password = self.cleaned_data.get('password')
         if len(password) < 6:
-            raise forms.ValidationError(u"Your password is too short.")
+            raise forms.ValidationError(u"密码至少6位")
         elif len(password) > 20:
-            raise forms.ValidationError(u"Your password is too long.")
+            raise forms.ValidationError(u"密码至多20位")
         return password
 
 
@@ -65,7 +65,7 @@ class RegistrationForm(forms.ModelForm):
         password2 = self.cleaned_data.get('password2')
 
         if password and password2 and password != password2:
-            raise forms.ValidationError(u"Password mismatch. Please enter again.")
+            raise forms.ValidationError(u"两次密码不一致，请再次输入")
         return password2
 
 
@@ -78,13 +78,13 @@ class UserProfileForm(forms.ModelForm):
         phone = self.cleaned_data.get('phone')
 
         if len(phone) < 11:
-            raise forms.ValidationError(u"Your phone must be at least 11 characters long.")
+            raise forms.ValidationError(u"手机号码至少11位")
         elif len(phone) > 20:
-            raise forms.ValidationError(u"Your phone is too long.")
+            raise forms.ValidationError(u"手机号码输入错误")
         else:
             filter_result = UserProfile.objects.filter(phone__exact=phone)
             if len(filter_result) > 0:
-                raise forms.ValidationError(u"Your phone already exists.")
+                raise forms.ValidationError(u"手机号码已存在")
 
         return phone
 
@@ -92,13 +92,13 @@ class UserProfileForm(forms.ModelForm):
         StudentID = self.cleaned_data.get('StudentID')
 
         if len(StudentID) < 9:
-            raise forms.ValidationError(u"Your StudentID must be at least 9 characters long.")
+            raise forms.ValidationError(u"学号至少需要9位")
         elif len(StudentID) > 20:
-            raise forms.ValidationError(u"Your StudentID is too long.")
+            raise forms.ValidationError(u"学号格式错误")
         else:
             filter_result = UserProfile.objects.filter(StudentID__exact=StudentID)
             if len(filter_result) > 0:
-                raise forms.ValidationError(u"Your StudentID already exists.")
+                raise forms.ValidationError(u"学号已存在")
 
         return StudentID
 

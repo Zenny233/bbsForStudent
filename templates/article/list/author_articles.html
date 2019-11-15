@@ -4,7 +4,7 @@
 {% block title %}articles{% endblock %}
 {% block content %}
 <div class="row text-center vertical-middle-sm">
-    <h1>阅读，丰富头脑，善化行为</h1> 
+    <h1>作者专栏</h1>
 </div>
 <div class="container"> 
 <div class="col-md-8">
@@ -22,13 +22,7 @@
     {% include "paginator.html" %} 
 </div>
 <div class="col-md-4">
-<div>
-    {% if userinfo.photo %}
-    <img src="{{ userinfo.photo | striptags }}" class="img-circle" id="my_photo" name="user_face" style="width: 300px"> 
-    {% else %}
-    <img name="user_face" src="{% static 'images/newton.jpg' %}" class="img-circle" id="my_photo" style="width: 300px">
-    {% endif %}
-</div>
+
 <div>
     <p>用户名：{{ user.username }}</p>
     <p>共发表文章{% author_total_articles user %}篇</p>

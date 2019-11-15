@@ -23,7 +23,7 @@ r = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=set
 def article_titles(request, username=None):
     if username:
         user = User.objects.get(username=username)
-        articles_title = ArticlePost.objects.filter(author=user)
+        articles_title = ArticlePost.objects.filter(author=user,is_check_article='1')
         try:
             userinfo = user.userinfo
             userprofile = user.userprofile
@@ -31,7 +31,7 @@ def article_titles(request, username=None):
             userinfo = None
             userprofile = None
     else:
-        articles_title = ArticlePost.objects.all()
+        articles_title = ArticlePost.objects.filter(is_check_article='1')
     paginator = Paginator(articles_title, 5)
     page = request.GET.get('page')
     try:
@@ -78,7 +78,8 @@ def article_detail(request, id, slug):
         comment_form = CommentForm()
 
 
-    article_comments = Comment.objects.filter(article=article)
+    article_comments = Comment.objects.filter(article=article,is_check_comment='1')
+    total_comments= Comment.objects.filter(article=article,is_check_comment='1').count
     paginator = Paginator(article_comments, 5)
     page = request.GET.get('page')
     try:
@@ -96,7 +97,7 @@ def article_detail(request, id, slug):
     similar_articles = ArticlePost.objects.filter(article_tag__in=article_tags_ids).exclude(id=article.id)
     similar_articles = similar_articles.annotate(same_tags=Count("article_tag")).order_by('-same_tags', '-created')[:4]
     # return render(request, "article/list/article_content.html", {"article":article, "total_views":total_views, "most_viewed": most_viewed, "comment_form":comment_form, "similar_articles":similar_articles})
-    return render(request, "article/list/article_content.html", {"article":article, "total_views":total_views, "most_viewed": most_viewed, "comment_form":comment_form, "similar_articles":similar_articles, "comment_page":comment_page, "page": current_page})
+    return render(request, "article/list/article_content.html", {"total_comments":total_comments,"article":article, "total_views":total_views, "most_viewed": most_viewed, "comment_form":comment_form, "similar_articles":similar_articles, "comment_page":comment_page, "page": current_page})
 
 @csrf_exempt
 @require_POST
@@ -137,7 +138,7 @@ def search(request):
     if not q:
         error_msg = "请输入关键词"
         return render(request, 'article/list/article_titles.html', {'error_msg': error_msg})
-    articles_title = ArticlePost.objects.filter(Q(title__icontains=q) | Q(body__icontains=q))
+    articles_title = ArticlePost.objects.filter(Q(title__icontains=q) | Q(body__icontains=q),is_check_article='1')
 
     paginator = Paginator(articles_title, 2)
     page = request.GET.get('page')

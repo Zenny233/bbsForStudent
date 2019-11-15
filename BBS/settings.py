@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'blog',
     'account',
     'article',
     'image',
@@ -135,7 +134,7 @@ STATICFILES_DIRS = (
 )
 
 
-LOGIN_REDIRECT_URL = '/home/'
+LOGIN_REDIRECT_URL = '/article/list-article-titles/'
 
 LOGIN_URL = '/account/login/'
 

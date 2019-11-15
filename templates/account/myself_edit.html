@@ -2,7 +2,7 @@
 {% block title %}my information{% endblock %} 
 {% block content %}
 <div class="row text-center vertical-middle-sm">
-    <h1>Edit My Information</h1> 
+    <h1>编辑个人信息</h1>
     <div class="row">
         <div class="col-md-6" >
             <form class="form-horizontal" action="." method="post">{% csrf_token %}
@@ -48,13 +48,11 @@
                 </div>
         
                 <div class="row">
-                    <input type="submit" class="btn btn-primary btn-lg" value="Submit">   
+                    <input type="submit" class="btn btn-primary btn-lg" value="提交">
                 </div>
             </form>
         </div>
-        <div class="col-md-6">
-            <p>picture</p> 
-        </div>
+
     </div>    
 </div>
 {% endblock %}

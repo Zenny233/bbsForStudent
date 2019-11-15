@@ -31,6 +31,7 @@ class ArticlePost(models.Model):
     updated = models.DateTimeField(auto_now=True)
     users_like = models.ManyToManyField(User, related_name="articles_like", blank=True)
     article_tag = models.ManyToManyField(ArticleTag, related_name='article_tag', blank=True)
+    is_check_article=models.CharField(max_length=2,default="0")
 
     class Meta:
         ordering = ("-updated",)
@@ -56,10 +57,11 @@ class Comment(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User,on_delete=models.CASCADE,related_name="comment_user")
     commentator = models.CharField(max_length=90)
+    is_check_comment = models.CharField(max_length=2,default="0")
 
     class Meta:
         ordering = ('-created',)
 
     def __str__(self):
-        return "Comment by {0} on {1}".format(self.commentator.username, self.article)
+        return "Comment by {0} on {1}".format(self.commentator, self.article)
 

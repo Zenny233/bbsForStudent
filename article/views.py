@@ -159,6 +159,7 @@ def redit_article(request, article_id):
             redit_article.column = request.user.article_column.get(id=request.POST['column_id'])
             redit_article.title = request.POST['title']
             redit_article.body = request.POST['body']
+            redit_article.is_check_article='0'
             redit_article.save()
             return HttpResponse("1")
         except:
