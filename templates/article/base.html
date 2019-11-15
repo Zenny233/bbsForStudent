@@ -8,7 +8,9 @@
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
 </head>
-<body>
+
+<body style="background-image: url({% static 'images/background.jpg' %});background-size:100% 150%;" >
+
     <div class="container">
         {% include 'article/header.html' %} 
         <div class="col-md-2">
