@@ -139,12 +139,12 @@ LOGIN_REDIRECT_URL = '/article/list-article-titles/'
 LOGIN_URL = '/account/login/'
 
 EMAIL_HOST = 'smtp.126.com'
-EMAIL_HOST_USER = "hishier@126.com"
-EMAIL_HOST_PASSWORD = "xu011235"
+EMAIL_HOST_USER = "your email address"
+EMAIL_HOST_PASSWORD = "your email password"
 EMAIL_PORT = 25
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = "hishier@126.com"
-EMAIL_FROM="hishier@126.com"
+DEFAULT_FROM_EMAIL = "your email address"
+EMAIL_FROM="your email address"
 
 REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
